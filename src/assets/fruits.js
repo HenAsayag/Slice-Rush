@@ -1,3 +1,4 @@
+import { assetUrl } from '../utils/assetUrl.js';
 import { applyAtlas, ATLAS_FRAMES } from './atlas.js';
 export const FRUITS = [
   {
@@ -302,5 +303,5 @@ function loadSprite(texture, canvas, path) {
   image.onerror = () => {
     /* The original procedural texture is already ready. */
   };
-  image.src = path;
+  image.src = assetUrl(path);
 }

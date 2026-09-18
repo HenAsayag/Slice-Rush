@@ -1,13 +1,14 @@
+import { assetUrl } from '../utils/assetUrl.js';
 import { read, save } from '../utils/storage.js';
 export const AUDIO_PATHS = {
-  slice: '/assets/audio/slice.wav',
-  fruit_hit: '/assets/audio/fruit_hit.wav',
-  combo: '/assets/audio/combo.wav',
-  bomb: '/assets/audio/bomb.wav',
-  miss: '/assets/audio/miss.wav',
-  game_over: '/assets/audio/game_over.wav',
-  menu_click: '/assets/audio/menu_click.wav',
-  music: '/assets/audio/background_music.mp3',
+  slice: assetUrl('/assets/audio/slice.wav'),
+  fruit_hit: assetUrl('/assets/audio/fruit_hit.wav'),
+  combo: assetUrl('/assets/audio/combo.wav'),
+  bomb: assetUrl('/assets/audio/bomb.wav'),
+  miss: assetUrl('/assets/audio/miss.wav'),
+  game_over: assetUrl('/assets/audio/game_over.wav'),
+  menu_click: assetUrl('/assets/audio/menu_click.wav'),
+  music: assetUrl('/assets/audio/background_music.mp3'),
 };
 export class AudioManager {
   constructor() {

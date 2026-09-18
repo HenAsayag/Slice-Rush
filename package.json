@@ -7,7 +7,9 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "build:pages": "vite build --base=/Slice-Rush/",
+    "preview:pages": "vite preview --host 127.0.0.1 --base=/Slice-Rush/"
   },
   "dependencies": {
     "phaser": "3.90.0"

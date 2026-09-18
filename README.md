@@ -1,5 +1,7 @@
 # Slice Rush
 
+**Play online:** https://henasayag.github.io/Slice-Rush/
+
 An original browser arcade game set in a tropical night market. Built with JavaScript, Phaser 3, Canvas-generated fruit artwork, CSS, and Web Audio. No backend, CDN, account, or runtime network dependency.
 
 ## Run locally
@@ -87,3 +89,19 @@ The game explicitly uses `Phaser.WEBGL` for sprite, particle, trail and effect r
 The **Full screen** control is available in both the menu and gameplay, with a minimum 44px touch target on mobile. It uses the standard or supported WebKit fullscreen API directly from the user's tap. If native page fullscreen is unavailable, it offers an expanded in-page view, explicitly noting that browser controls may remain visible. Tap **Exit view** to leave. Browser and operating-system restrictions still apply, particularly on iPhone.
 
 With the dev server running, `node tests/webgl-fullscreen.mjs` checks a live WebGL rendering context, native fullscreen entry/exit, the unsupported-fullscreen fallback, mobile control sizing, context-loss recovery, and the unsupported-WebGL message.
+
+## GitHub Pages publishing
+
+The live game is hosted at https://henasayag.github.io/Slice-Rush/ . GitHub Pages uses **GitHub Actions** as its source. Every push to `master` runs `.github/workflows/deploy-pages.yml`, installs dependencies, runs the rule tests, builds the game, and publishes `dist/`.
+
+`npm run build:pages` sets Vite's base to `/Slice-Rush/`. Runtime texture/audio paths use `assetUrl()` so they match the project URL; the regular local development server still runs at `/`.
+
+To reproduce the hosted build locally:
+
+```sh
+npm run build:pages
+npm run preview:pages
+node tests/deployment.mjs
+```
+
+Set `SLICE_RUSH_URL` to the hosted URL to run the same production browser smoke test against GitHub Pages. It checks mobile startup, WebGL, the fullscreen control, loaded fruit/background assets, and absence of runtime or HTTP errors.

@@ -1,5 +1,6 @@
+import { assetUrl } from '../utils/assetUrl.js';
 // Source rectangles reference the supplied sheet without altering the original image.
-export const ATLAS_URL = '/assets/fruits/fruit-atlas.png';
+export const ATLAS_URL = assetUrl('assets/fruits/fruit-atlas.png');
 export const ATLAS_FRAMES = {
   watermelon: [
     [12, 40, 190, 217],
