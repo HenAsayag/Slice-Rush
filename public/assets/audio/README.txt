@@ -1,0 +1,1 @@
+The game includes original synthesized audio and does not require audio files. Optional replacement recordings use the paths exported by src/audio/AudioManager.js. Call audio.loadCustom(effectName) to load a replacement effect; failed fetches preserve the synthesized sound.
