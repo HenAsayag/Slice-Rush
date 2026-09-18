@@ -66,7 +66,52 @@ test('dense unlimited spawner stays bounded and reuses slots during a long run',
     assert.ok(!fruits.some((f) => f.bomb));
   }
   assert.ok(launched > 1000);
-  assert.ok(max >= 18 && max <= 24);
+  assert.ok(max >= 12 && max <= 24);
   spawner.reset();
   assert.equal(spawner.pending.length, 0);
+});
+
+test('every mode launches fruit individually across waves, slow frames and full pools', () => {
+  for (const mode of Object.keys(MODES)) {
+    let time = 0;
+    const launches = [];
+    let seed = 123;
+    const random = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+    const fruits = Array.from({ length: 64 }, () => ({
+      active: false,
+      launch(spec) {
+        this.bomb = spec.name === 'bomb';
+        launches.push(time);
+      },
+    }));
+    const scene = {
+      scale: { width: 390, height: 844 },
+      manager: { mode, elapsed: 120, score: { launched: 0 } },
+      fruits: { items: fruits, take: () => fruits.find((f) => !f.active) },
+    };
+    const spawner = new Spawner(scene, random);
+    for (let frame = 0; frame < 1800; frame++) {
+      const dt = frame % 97 === 0 ? 0.4 : 1 / 60;
+      time += dt;
+      // Simulate a saturated pool, then release it without a catch-up burst.
+      for (const fruit of fruits) fruit.active = frame >= 500 && frame < 560;
+      const previous = launches.length;
+      spawner.update(dt);
+      assert.ok(launches.length - previous <= 1, mode + ': at most one launch per frame');
+      assert.ok(spawner.pending.length <= 16, mode + ': no accumulating waves');
+    }
+    assert.ok(launches.length > 90, mode + ': continuous launches');
+    const gaps = launches.slice(1).map((t, i) => t - launches[i]);
+    assert.ok(
+      gaps.every((gap) => gap >= (mode === 'unlimited' ? 0.07 : 0.14) - 1e-9),
+      mode,
+    );
+    assert.ok(
+      new Set(gaps.filter((gap) => gap < 0.3).map((gap) => gap.toFixed(3))).size >= 3,
+      mode + ': varied individual timing',
+    );
+    spawner.reset();
+    assert.equal(spawner.launchWait, 0);
+    assert.equal(spawner.pending.length, 0);
+  }
 });

@@ -27,7 +27,7 @@ With the dev server running, `node tests/browser.mjs` runs browser integration c
 
 Hold the primary mouse button or drag one finger through fruit. The full segment between input events is checked, including coalesced pointer events. Release to finish a combo. Extra touches are ignored until the active finger is released. Avoid the dark bombs marked with an orange X.
 
-- **Unlimited:** no timer, no bombs, no miss penalty; fast waves of 10–15 fruit. Pause and choose **Finish & save score** when done. Records also checkpoint every five seconds and on pause.
+- **Unlimited:** no timer, no bombs, no miss penalty; a fast, continuous stream of individually timed fruit. Pause and choose **Finish & save score** when done. Records also checkpoint every five seconds and on pause.
 - **Classic:** endless play; three missed fruits or one sliced bomb ends the round.
 - **Time Attack:** 60 seconds; misses are free; a bomb subtracts 10 points, down to zero.
 - **Zen:** 90 seconds; no bombs, no miss penalty, and larger fruit waves.
@@ -71,7 +71,7 @@ The effects and music are fully playable Web Audio synthesis, not empty placehol
 ## Validation
 
 - Production build completed.
-- Eleven unit tests cover collision, scoring, all modes, viewport-safe trajectories and bounded pooling during a three-minute simulated Unlimited run.
+- Twelve unit tests cover collision, scoring, all modes, viewport-safe trajectories and bounded pooling during a three-minute simulated Unlimited run.
 - Chrome integration checks cover five-fruit swipes, half creation, pause/resume, bombs, misses, both clocks, persistence, primary/secondary touch handling and missing-image fallback.
 - Desktop and phone-sized layouts visually inspected; browser integration reports no uncaught runtime errors.
 
@@ -109,7 +109,7 @@ Set `SLICE_RUSH_URL` to the hosted URL to run the same production browser smoke 
 
 ## Unlimited and mobile gameplay
 
-Unlimited is selected by default. It launches staggered lanes of fruit every 0.48–0.72 seconds and gradually increases its pace, without adding bombs, a timer, or missed-fruit penalties. Active fruit caps are 24 on compact screens and 44 on larger screens; unlaunched fruit do not count against accuracy. Classic and Time Attack also start faster. Gravity increases with launch speed so the apex stays below the HUD.
+Unlimited is selected by default. Each fruit launches individually with a randomized 90–150 ms gap, gradually quickening to 70–130 ms. All modes share a single launch cooldown across waves, so slow frames or a full fruit pool never cause a simultaneous catch-up burst. Unlimited gradually increases its pace, without adding bombs, a timer, or missed-fruit penalties. Active fruit caps are 24 on compact screens and 44 on larger screens; unlaunched fruit do not count against accuracy. Classic and Time Attack also start faster. Gravity increases with launch speed so the apex stays below the HUD.
 
 The mobile menu uses a 2×2 mode grid, larger pause controls and safe-area-aware placement. Resize synchronization keeps the WebGL canvas and swipe coordinates aligned; small toolbar resizes do not pause. Mobile particles are bounded at 360, and combo text is throttled to keep dense waves readable. Fast swipes process their final pointer-up segment.
 
