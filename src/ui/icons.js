@@ -1,4 +1,5 @@
 export const icons = {
+  infinity: '<path d="M12 12c-3-6-10-6-10 0s7 6 10 0 10-6 10 0-7 6-10 0Z"/>',
   collapse: '<path d="M3 8h5V3m13 5h-5V3M3 16h5v5m13-5h-5v5"/>',
   music:
     '<path d="M9 18V5l11-2v13M9 9l11-2"/><ellipse cx="6" cy="18" rx="3" ry="3"/><ellipse cx="17" cy="16" rx="3" ry="3"/>',

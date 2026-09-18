@@ -46,7 +46,7 @@ test('scoring tracks rare, golden, longest combo and accuracy', () => {
   assert.equal(s.longest, 3);
   assert.equal(s.accuracy, 75);
   assert.equal(comboLabel(2), 'NICE SLICE!');
-  assert.equal(comboLabel(5), 'MEGA SLICE!');
+  assert.equal(comboLabel(5), 'MEGA SLICE ×5');
 });
 test('difficulty increases throughout endless play', () => {
   const a = difficulty(0, 'classic'),

@@ -10,7 +10,12 @@ export class SwipeTrail {
     if (this.points.length > 70) this.points.shift();
   }
   update(dt) {
-    this.points = this.points.filter((p) => (p.life -= dt) > 0);
+    let live = 0;
+    for (const p of this.points) {
+      p.life -= dt;
+      if (p.life > 0) this.points[live++] = p;
+    }
+    this.points.length = live;
     this.graphics.clear();
     for (let i = 1; i < this.points.length; i++) {
       const a = this.points[i - 1],
@@ -55,7 +60,12 @@ export class SliceSystem {
       };
     };
     canvas.addEventListener('pointerdown', (e) => {
-      if (this.pointer !== null || scene.manager.state !== 'playing') return;
+      if (
+        this.pointer !== null ||
+        scene.manager.state !== 'playing' ||
+        (e.pointerType === 'mouse' && e.button !== 0)
+      )
+        return;
       e.preventDefault();
       this.pointer = e.pointerId;
       canvas.setPointerCapture(e.pointerId);
@@ -68,7 +78,8 @@ export class SliceSystem {
     canvas.addEventListener('pointermove', (e) => {
       if (e.pointerId !== this.pointer || scene.manager.state !== 'playing') return;
       e.preventDefault();
-      for (const ev of e.getCoalescedEvents?.().length ? e.getCoalescedEvents() : [e]) {
+      const samples = e.getCoalescedEvents?.();
+      for (const ev of samples?.length ? samples : [e]) {
         const p = point(ev);
         this.segment(this.previous, p);
         this.previous = p;
@@ -76,6 +87,8 @@ export class SliceSystem {
     });
     const end = (e) => {
       if (e.pointerId === this.pointer) {
+        if (e.type === 'pointerup' && scene.manager.state === 'playing')
+          this.segment(this.previous, point(e));
         this.pointer = null;
         this.previous = null;
         this.combo.reset();

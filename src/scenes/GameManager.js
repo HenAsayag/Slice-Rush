@@ -5,7 +5,7 @@ export class GameManager {
   constructor(ui) {
     this.ui = ui;
     this.audio = new AudioManager();
-    this.mode = 'classic';
+    this.mode = 'unlimited';
     this.state = 'menu';
     this.elapsed = 0;
     this.score = new ScoreSystem(this.mode);
@@ -44,6 +44,8 @@ export class GameManager {
     this.audio.unlock();
     this.audio.play('menu_click');
     this.elapsed = 0;
+    this.startBest = this.bests[this.mode] || 0;
+    this.nextSave = 5;
     this.score = new ScoreSystem(this.mode);
     this.state = 'playing';
     this.scene.begin();
@@ -53,6 +55,10 @@ export class GameManager {
   }
   tick(dt) {
     this.elapsed += dt;
+    if (this.mode === 'unlimited' && this.elapsed >= this.nextSave) {
+      this.persistBest();
+      this.nextSave = this.elapsed + 5;
+    }
     const clock = Math.ceil(MODES[this.mode].duration - this.elapsed);
     if (clock !== this.lastClock) {
       this.lastClock = clock;
@@ -62,6 +68,7 @@ export class GameManager {
   }
   pause() {
     if (this.state !== 'playing') return;
+    if (this.mode === 'unlimited') this.persistBest();
     this.state = 'paused';
     this.scene.slicer.reset();
     this.scene.trail.clear();
@@ -73,7 +80,20 @@ export class GameManager {
     this.audio.unlock();
     this.ui.show('playing');
   }
+  persistBest() {
+    if (this.score.mode !== this.mode) return;
+    if (this.score.score > (this.bests[this.mode] || 0)) {
+      this.bests[this.mode] = this.score.score;
+      save('bests', this.bests);
+    }
+  }
+  finish() {
+    if (this.mode !== 'unlimited' || !['playing', 'paused'].includes(this.state)) return;
+    this.state = 'playing';
+    this.end('An endless run. A fresh score.');
+  }
   menu() {
+    if (this.mode === 'unlimited') this.persistBest();
     clearTimeout(this.endTimer);
     this.state = 'menu';
     this.scene?.begin();
@@ -96,7 +116,7 @@ export class GameManager {
     this.state = 'ending';
     this.scene.slicer.reset();
     this.audio.play('game_over');
-    const old = this.bests[this.mode] || 0;
+    const old = this.startBest ?? this.bests[this.mode] ?? 0;
     this.newBest = this.score.score > old;
     if (this.newBest) {
       this.bests[this.mode] = this.score.score;

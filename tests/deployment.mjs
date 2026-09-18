@@ -23,10 +23,11 @@ await page.waitForFunction(() => !document.querySelector('#play')?.disabled);
 await page.waitForFunction(() =>
   [...document.images].every((i) => i.complete && i.naturalWidth > 0),
 );
-await page.locator('[data-mode="zen"]').click();
+await page.locator('[data-mode="unlimited"]').click();
 await page.locator('#play').click();
 await page.waitForTimeout(1400);
 assert.ok(await page.locator('#hud').isVisible());
+assert.equal(await page.locator('#timer').textContent(), '∞');
 assert.ok(
   await page.evaluate(
     () =>

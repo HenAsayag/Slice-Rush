@@ -43,6 +43,24 @@ if (!supportsWebGL()) {
     banner: false,
     callbacks: {
       postBoot(game) {
+        let resizeFrame = 0;
+        const resizeToViewport = () => {
+          cancelAnimationFrame(resizeFrame);
+          resizeFrame = requestAnimationFrame(() => {
+            const bounds = game.canvas.parentElement.getBoundingClientRect();
+            const width = Math.round(bounds.width),
+              height = Math.round(bounds.height);
+            if (
+              width > 0 &&
+              height > 0 &&
+              (game.scale.width !== width || game.scale.height !== height)
+            )
+              game.scale.resize(width, height);
+          });
+        };
+        window.addEventListener('resize', resizeToViewport);
+        window.visualViewport?.addEventListener('resize', resizeToViewport);
+        resizeToViewport();
         game.canvas.setAttribute('aria-label', 'Slice Rush WebGL playfield');
         game.canvas.addEventListener('webglcontextlost', () => {
           manager.pause();

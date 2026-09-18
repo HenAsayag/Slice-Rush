@@ -1,4 +1,11 @@
 export const MODES = {
+  unlimited: {
+    name: 'Unlimited',
+    duration: Infinity,
+    bombs: false,
+    misses: false,
+    description: 'Endless fruit. No bombs. No limits.',
+  },
   classic: {
     name: 'Classic',
     duration: Infinity,
@@ -22,16 +29,34 @@ export const MODES = {
   },
 };
 export function difficulty(seconds, mode) {
+  if (mode === 'unlimited') {
+    const level = Math.min(1, Math.max(0, seconds) / 120);
+    return {
+      wave: 10 + Math.floor(level * 4),
+      gap: 0.72 - level * 0.24,
+      speed: 1.24 + level * 0.25,
+      bombChance: 0,
+    };
+  }
+  if (mode === 'zen') return { wave: 6, gap: 1.3, speed: 1.05, bombChance: 0 };
+  const level = seconds < 20 ? 0 : seconds < 45 ? 1 : seconds < 90 ? 2 : 3;
   return {
-    wave: mode === 'zen' ? 6 : seconds < 20 ? 2 : seconds < 45 ? 3 : seconds < 90 ? 4 : 6,
-    gap:
-      mode === 'zen' ? 1.7 : seconds < 20 ? 1.8 : seconds < 45 ? 1.45 : seconds < 90 ? 1.15 : 0.85,
-    speed: seconds < 20 ? 1 : seconds < 45 ? 1.06 : 1.12,
-    bombChance: mode === 'zen' ? 0 : seconds < 20 ? 0.13 : seconds < 90 ? 0.2 : 0.3,
+    wave: (mode === 'time' ? 4 : 3) + level,
+    gap: Math.max(0.62, (mode === 'time' ? 1.05 : 1.3) - level * 0.18),
+    speed: 1.12 + level * 0.08,
+    bombChance: !MODES[mode].bombs ? 0 : level === 0 ? 0.1 : level < 3 ? 0.16 : 0.23,
   };
 }
 export const comboLabel = (n) =>
-  n >= 5 ? 'MEGA SLICE!' : n >= 3 ? `COMBO ×${n}` : n === 2 ? 'NICE SLICE!' : '';
+  n >= 10
+    ? `FRUIT FRENZY ×${n}`
+    : n >= 5
+      ? `MEGA SLICE ×${n}`
+      : n >= 3
+        ? `COMBO ×${n}`
+        : n === 2
+          ? 'NICE SLICE!'
+          : '';
 export class ScoreSystem {
   constructor(mode) {
     this.mode = mode;

@@ -5,7 +5,7 @@ import { Pool, rand } from '../utils/math.js';
 import { ParticleSystem } from '../systems/ParticleSystem.js';
 import { SliceSystem, SwipeTrail } from '../systems/SwipeTrail.js';
 import { Spawner } from '../systems/Spawner.js';
-import { comboLabel } from '../systems/rules.js';
+import { comboLabel, MODES } from '../systems/rules.js';
 export class MarketScene extends Phaser.Scene {
   constructor(manager) {
     super('market');
@@ -27,16 +27,35 @@ export class MarketScene extends Phaser.Scene {
     }));
     this.slow = 0;
     this.manager.ready(this);
+    this.viewport = { width: this.scale.width, height: this.scale.height };
     this.scale.on('resize', () => {
-      if (this.manager.state === 'playing') this.manager.pause();
+      const { width, height } = this.scale,
+        previous = this.viewport;
+      const rotated = Math.abs(width - previous.width) > 16;
+      const largeChange = Math.abs(height - previous.height) > Math.max(100, previous.height * 0.2);
+      for (const f of [...this.fruits.items, ...this.halves.items])
+        if (f.active) {
+          f.x *= width / previous.width;
+          f.y *= height / previous.height;
+          f.vx *= width / previous.width;
+          f.vy *= height / previous.height;
+          f.gravity *= height / previous.height;
+          f.render();
+        }
+      this.viewport = { width, height };
+      this.trail.clear();
+      this.slicer.reset();
+      if ((rotated || largeChange) && this.manager.state === 'playing') this.manager.pause();
     });
   }
+
   begin() {
     for (const f of [...this.fruits.items, ...this.halves.items]) f.release();
     this.effects.clear();
     this.trail.clear();
     this.slicer.reset();
-    this.spawner.wait = 0.65;
+    this.spawner.reset();
+    this.comboCooldown = 0;
     this.slow = 0;
   }
   slice(f, combo, angle) {
@@ -57,7 +76,7 @@ export class MarketScene extends Phaser.Scene {
     m.score.fruit(f.spec.value, combo);
     m.audio.play('slice');
     m.audio.play('fruit_hit');
-    m.audio.vibrate(12);
+    if (combo === 1 || combo % 5 === 0) m.audio.vibrate(12);
     this.effects.burst(x, y, f.spec.juice, combo >= 3);
     this.effects.slash(x, y, angle, f.hitRadius * 2.8);
     this.effects.popup(x, y - 35, '+' + f.spec.value, f.spec.value === 10 ? '#ffe277' : '#fff8dd');
@@ -72,7 +91,8 @@ export class MarketScene extends Phaser.Scene {
     }
     f.release();
     this.cameras.main.shake(80, 0.002);
-    if (combo >= 2) {
+    if (combo >= 2 && m.elapsed >= this.comboCooldown && (combo <= 3 || combo % 5 === 0)) {
+      this.comboCooldown = m.elapsed + 0.25;
       this.effects.popup(
         Math.max(110, Math.min(this.scale.width - 110, x)),
         Math.max(170, y - 85),
@@ -81,7 +101,7 @@ export class MarketScene extends Phaser.Scene {
         true,
       );
       m.audio.play('combo');
-      if (combo >= 3) this.slow = 0.06;
+      if (combo >= 3 && m.mode !== 'unlimited') this.slow = 0.05;
     }
     m.updateHud();
   }
@@ -114,18 +134,19 @@ export class MarketScene extends Phaser.Scene {
     if (m.state !== 'playing') return;
     const dt = real * (this.slow > 0 ? 0.18 : 1);
     this.slow -= real;
-    this.spawner.update(dt);
+    this.spawner.update(real);
     for (const f of this.fruits.items) {
       if (!f.active) continue;
       f.update(dt);
       if (f.y < h - f.spec.r) f.entered = true;
       if (f.vy > 0 && f.y > h + 85) {
         if (!f.bomb) {
-          m.audio.play('miss');
+          if (MODES[m.mode].misses) m.audio.play('miss');
           if (m.score.miss()) m.end('Three slipped away.');
           m.updateHud();
         }
         f.release();
+        if (m.state !== 'playing') break;
       }
     }
     for (const f of this.halves.items) {

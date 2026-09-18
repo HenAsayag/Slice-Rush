@@ -10,15 +10,24 @@ export class UI {
  <header class="topbar"><button class="brand" aria-label="Slice Rush main menu">${icon('blade')}<span>SLICE<span class="accent">RUSH</span><small>THE NIGHT MARKET ARCADE</small></span></button><div class="top-actions"><span class="live-dot"></span><span class="market-open">THE MARKET IS OPEN</span><button id="sound" class="icon-button" aria-label="Toggle sound effects" title="Sound effects">${icon('sound')}</button><button id="music" class="icon-button" aria-label="Toggle background music" title="Background music">${icon('music')}</button><button id="fullscreen" class="icon-button fullscreen-button" aria-label="Toggle fullscreen">${icon('expand')}</button></div></header>
  <main id="menu" class="screen menu"><div class="menu-intro"><span class="eyebrow"><i></i> FRESH FRUIT. SHARP REFLEXES.</span><h1><span>SLICE</span> <em>RUSH<span class="title-spark">✦</span></em></h1><p class="tagline">A little chaos. A lot of juice.</p><p class="subline">Find your flow at the night market.</p></div>
  <div class="fruit-display" aria-hidden="true"><img class="hero-fruit melon"/><img class="hero-fruit orange"/><img class="hero-fruit lime"/><img class="hero-fruit berry"/><span class="fruit-streak"></span><span class="tiny-spark spark-one">✧</span><span class="tiny-spark spark-two">✦</span></div>
- <section class="mode-section" aria-label="Game mode"><div class="section-label"><span></span> MAKE YOUR CUT <span></span></div><div class="mode-grid"><button class="mode-card selected" data-mode="classic" aria-pressed="true"><span class="mode-icon">${icon('blade')}</span><span class="mode-copy"><strong>Classic</strong><small>3 lives · Endless slicing</small></span><span class="selection-dot"></span><span class="mode-tag">THE ORIGINAL</span></button><button class="mode-card" data-mode="time" aria-pressed="false"><span class="mode-icon">${icon('clock')}</span><span class="mode-copy"><strong>Time Attack</strong><small>60 seconds · Beat the clock</small></span><span class="selection-dot"></span></button><button class="mode-card" data-mode="zen" aria-pressed="false"><span class="mode-icon">${icon('leaf')}</span><span class="mode-copy"><strong>Zen</strong><small>90 seconds · Find your flow</small></span><span class="selection-dot"></span></button></div></section>
+ <section class="mode-section" aria-label="Game mode"><div class="section-label"><span></span> MAKE YOUR CUT <span></span></div><div class="mode-grid">${Object.entries(
+   MODES,
+ )
+   .map(
+     ([mode, config]) =>
+       `<button class="mode-card ${mode === 'unlimited' ? 'selected' : ''}" data-mode="${mode}" aria-pressed="${mode === 'unlimited'}"><span class="mode-icon">${icon({ unlimited: 'infinity', classic: 'blade', time: 'clock', zen: 'leaf' }[mode])}</span><span class="mode-copy"><strong>${config.name}</strong><small>${{ unlimited: 'No timer · Fruit frenzy', classic: '3 lives · Stay sharp', time: '60 seconds · Go fast', zen: '90 seconds · Just flow' }[mode]}</small></span><span class="selection-dot"></span>${mode === 'unlimited' ? '<span class="mode-tag">NEW · ENDLESS</span>' : ''}</button>`,
+   )
+   .join(
+     '',
+   )}</div><p id="mode-description" class="mode-description">Endless fruit. No bombs. No limits.</p></section>
  <button id="play" class="play-button" disabled><span>${icon('blade')} LET’S SLICE</span>${icon('arrow')}</button><div class="menu-meta"><span>${icon('trophy')} PERSONAL BEST <b id="menu-best">0</b></span><i></i><button id="settings-button">${icon('gear')} Settings</button></div>
  </main>
  <section id="hud" class="hud" hidden><div class="score-block"><span class="eyebrow">SCORE</span><strong id="score">0</strong><small>BEST <b id="hud-best">0</b></small></div><div class="hud-center"><span id="mode-name" class="eyebrow">CLASSIC</span><b id="combo"></b></div><div class="hud-right"><div id="lives"></div><strong id="timer" hidden>1:00</strong><button id="pause" class="icon-button" aria-label="Pause game">${icon('pause')}</button></div></section>
  <div id="announcement" aria-live="polite"></div><div id="flash"></div>
- <div id="modal" class="modal-backdrop" hidden><section id="paused" class="dialog" hidden><span class="eyebrow">TAKE A BREATHER</span><h2>STAY SHARP.</h2><p>Your fruit can wait a moment.</p><button id="resume" class="primary">Back to slicing ${icon('arrow')}</button><button id="pause-settings" class="secondary">${icon('gear')} Settings</button><button class="text-button go-menu">Main menu</button></section>
+ <div id="modal" class="modal-backdrop" hidden><section id="paused" class="dialog" hidden><span class="eyebrow">TAKE A BREATHER</span><h2>STAY SHARP.</h2><p>Your fruit can wait a moment.</p><button id="resume" class="primary">Back to slicing ${icon('arrow')}</button><button id="finish-run" class="secondary">Finish & save score</button><button id="pause-settings" class="secondary">${icon('gear')} Settings</button><button class="text-button go-menu">Main menu</button></section>
  <section id="settings" class="dialog" hidden><button id="close-settings" class="dialog-close icon-button" aria-label="Close settings">${icon('close')}</button><span class="eyebrow">MAKE IT YOURS</span><h2>GOOD VIBES.</h2><p>The perfect mix for your night market.</p><div class="setting-row"><span>Sound effects<small>Every slice, pop, and splash</small></span><button data-toggle="sound" class="switch" role="switch" aria-label="Sound effects"></button></div><div class="setting-row"><span>Music<small>Tropical marimba, bass & a mellow beat</small></span><button data-toggle="music" class="switch" role="switch" aria-label="Music"></button></div><div class="setting-row"><span>Haptics<small>A little buzz on supported devices</small></span><button data-toggle="vibration" class="switch" role="switch" aria-label="Haptics"></button></div><button id="settings-done" class="primary">All set ${icon('arrow')}</button></section>
  <section id="results" class="dialog results" hidden><span id="result-eyebrow" class="eyebrow">THAT’S A WRAP</span><h2>NICELY SLICED.</h2><p id="result-reason"></p><div class="final-score"><strong id="final-score">0</strong><span>FINAL SCORE</span></div><div class="stats"><div><b id="best-score">0</b><small>BEST SCORE</small></div><div><b id="longest-combo">0</b><small>LONGEST COMBO</small></div><div><b id="fruit-sliced">0</b><small>FRUIT SLICED</small></div><div><b id="accuracy">0%</b><small>ACCURACY</small></div></div><button id="again" class="primary">One more round ${icon('arrow')}</button><button class="text-button go-menu">Main menu</button></section></div>
- <footer><span class="instruction">${icon('mouse')} <span>Hold & drag to slice <i>·</i> Watch out for bombs</span></span><span class="footer-right">SLICED FRESH. EVERY TIME. <span>✦</span></span></footer>`;
+ <footer><span class="instruction">${icon('mouse')} <span><span id="control-hint">Drag to slice · No bombs, just fruit</span></span></span><span class="footer-right">SLICED FRESH. EVERY TIME. <span>✦</span></span></footer>`;
     this.$ = (s) => document.querySelector(s);
     this.lastScore = -1;
     this.decorate();
@@ -41,7 +50,7 @@ export class UI {
       else if (m.state !== 'menu') m.menu();
     };
     document
-      .querySelectorAll('[data-mode]')
+      .querySelectorAll('button[data-mode]')
       .forEach((b) => (b.onclick = () => m.select(b.dataset.mode)));
     this.$('#sound').onclick = () => {
       m.audio.toggle('sound');
@@ -59,6 +68,7 @@ export class UI {
     this.$('#close-settings').onclick = this.$('#settings-done').onclick = () => m.closeSettings();
     this.$('#pause').onclick = () => m.pause();
     this.$('#resume').onclick = () => m.resume();
+    this.$('#finish-run').onclick = () => m.finish();
     this.$('#again').onclick = () => m.start();
     document.querySelectorAll('.go-menu').forEach((b) => (b.onclick = () => m.menu()));
     document.querySelectorAll('[data-toggle]').forEach(
@@ -88,17 +98,24 @@ export class UI {
     this.$('#play').disabled = false;
   }
   select(mode) {
-    document.querySelectorAll('[data-mode]').forEach((b) => {
+    document.querySelectorAll('button[data-mode]').forEach((b) => {
       const selected = b.dataset.mode === mode;
       b.classList.toggle('selected', selected);
       b.setAttribute('aria-pressed', selected);
     });
     this.$('#menu-best').textContent = this.m.bests[mode] || 0;
+    this.$('#mode-description').textContent = MODES[mode].description;
+    this.$('#control-hint').textContent =
+      (matchMedia('(pointer: coarse)').matches ? 'Swipe' : 'Hold & drag') +
+      ' to slice · ' +
+      (MODES[mode].bombs ? 'Watch out for bombs' : 'No bombs, just fruit');
   }
   show(state) {
     const menu = state === 'menu',
       modal = ['paused', 'settings', 'results'].includes(state);
     document.body.dataset.state = state;
+    document.body.dataset.gameMode = this.m.mode;
+    this.$('#finish-run').hidden = this.m.mode !== 'unlimited';
     this.$('#menu').hidden = !menu;
     this.$('#hud').hidden = !['playing', 'paused', 'ending'].includes(state);
     this.$('#modal').hidden = !modal;
@@ -130,7 +147,12 @@ export class UI {
         (_, i) => `<span class="life ${i < score.misses ? 'lost' : ''}">${icon('heart')}</span>`,
       ).join('');
     }
-    if (!classic) {
+    if (this.m.mode === 'unlimited') {
+      this.$('#timer').textContent = '∞';
+      this.$('#timer').classList.remove('urgent');
+      this.$('#timer').setAttribute('aria-label', 'Unlimited time');
+    } else if (!classic) {
+      this.$('#timer').removeAttribute('aria-label');
       const remaining = Math.max(0, Math.ceil(time));
       this.$('#timer').textContent =
         `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')}`;

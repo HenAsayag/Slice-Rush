@@ -2,9 +2,10 @@ import { rand, Pool } from '../utils/math.js';
 export class ParticleSystem {
   constructor(scene) {
     this.scene = scene;
+    this.compact = scene.scale.width < 600 || scene.scale.height < 500;
     this.graphics = scene.add.graphics().setDepth(5);
-    this.particles = new Pool(() => ({ active: false }), 700);
-    this.splats = new Pool(() => ({ active: false }), 110);
+    this.particles = new Pool(() => ({ active: false }), this.compact ? 360 : 700);
+    this.splats = new Pool(() => ({ active: false }), this.compact ? 48 : 110);
     this.slashes = new Pool(() => ({ active: false }), 24);
     this.popups = new Pool(
       () => ({
@@ -25,7 +26,9 @@ export class ParticleSystem {
     );
   }
   burst(x, y, color, strong = false) {
-    for (let i = 0; i < (strong ? 50 : 32); i++) {
+    const crowded = this.scene.manager.mode === 'unlimited';
+    const count = this.compact ? (crowded ? 12 : 20) : crowded ? 22 : strong ? 50 : 32;
+    for (let i = 0; i < count; i++) {
       const p = this.particles.take();
       if (!p) break;
       const angle = rand(0, Math.PI * 2),
@@ -42,7 +45,7 @@ export class ParticleSystem {
         color,
       });
     }
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < (this.compact ? 3 : 5); i++) {
       const s = this.splats.take();
       if (s)
         Object.assign(s, {

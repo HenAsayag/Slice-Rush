@@ -5,7 +5,7 @@ export class Fruit {
     this.sprite = scene.add.image(0, 0, 'orange').setVisible(false);
     this.active = false;
   }
-  launch(spec, x, y, vx, vy) {
+  launch(spec, x, y, vx, vy, { gravity = 720 } = {}) {
     const mobile = this.scene.scale.width < 600;
     Object.assign(this, {
       active: true,
@@ -14,6 +14,7 @@ export class Fruit {
       y,
       vx,
       vy,
+      gravity,
       angle: rand(-0.5, 0.5),
       spin: rand(-1.7, 1.7),
       half: 0,
@@ -38,7 +39,7 @@ export class Fruit {
   }
   update(dt) {
     this.age += dt;
-    this.vy += 720 * dt;
+    this.vy += this.gravity * dt;
     this.x += this.vx * dt;
     this.y += this.vy * dt;
     this.angle += this.spin * dt;

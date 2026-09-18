@@ -1341,3 +1341,231 @@ body[data-state='playing'] .vignette {
     display: none;
   }
 }
+/* Four modes with roomy tap targets, including the endless fruit-frenzy mode. */
+.mode-section {
+  width: min(900px, 100%);
+}
+.mode-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.mode-card {
+  padding-inline: 14px;
+  gap: 9px;
+}
+.mode-copy strong {
+  font-size: 15px;
+}
+.mode-copy small {
+  font-size: 8px;
+}
+.mode-description {
+  text-align: center;
+  color: #bfd3b7;
+  font-size: 11px;
+  margin: 13px 0 0;
+  min-height: 14px;
+}
+.mode-card[data-mode='unlimited'] .mode-icon {
+  color: #bbe989;
+}
+.mode-card[data-mode='unlimited'].selected {
+  background: linear-gradient(110deg, #405c36e8, #244d3aef);
+  border-color: #d0e18e;
+}
+.mode-card[data-mode='unlimited'] .mode-tag {
+  background: #cce79a;
+  color: #28402e;
+}
+body {
+  overscroll-behavior: none;
+}
+body[data-state='playing'] footer {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+body[data-game-mode='unlimited'] #timer {
+  color: #cfefa2;
+  font-size: 49px;
+}
+@media (max-width: 700px) {
+  .mode-section {
+    max-width: 430px;
+    margin-top: 20px;
+  }
+  .mode-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px 9px;
+  }
+  .mode-card {
+    flex-direction: row;
+    text-align: left;
+    min-height: 75px;
+    padding: 15px 11px;
+    gap: 10px;
+  }
+  .mode-copy strong {
+    font-size: 14px;
+  }
+  .mode-copy small {
+    font-size: 8px;
+    max-width: none;
+    white-space: normal;
+  }
+  .mode-icon svg {
+    width: 23px;
+    height: 23px;
+  }
+  .mode-tag {
+    left: 12px;
+    transform: none;
+    font-size: 5px;
+  }
+  .menu h1 {
+    font-size: 87px;
+  }
+  .menu .tagline {
+    font-size: 15px;
+    margin-top: 14px;
+  }
+  .mode-description {
+    font-size: 10px;
+    margin-top: 10px;
+  }
+  .menu .play-button {
+    margin-top: 15px;
+  }
+  .menu .menu-meta {
+    margin-top: 13px;
+  }
+  .hud {
+    top: max(96px, calc(env(safe-area-inset-top) + 83px));
+    left: max(18px, env(safe-area-inset-left));
+    right: max(18px, env(safe-area-inset-right));
+  }
+  .hud .icon-button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .hud-center {
+    top: 5px;
+  }
+  .hud-center .eyebrow {
+    font-size: 8px;
+  }
+  .hud-center b {
+    font-size: 9px;
+  }
+  #announcement {
+    top: 32%;
+  }
+  #game {
+    overscroll-behavior: none;
+  }
+}
+@media (max-width: 700px) and (max-height: 750px) {
+  .menu h1 {
+    font-size: 67px;
+  }
+  .menu .mode-section {
+    margin-top: 14px;
+  }
+  .mode-card {
+    min-height: 65px;
+    padding-block: 11px;
+  }
+  .mode-description {
+    margin-top: 7px;
+  }
+  .menu .subline {
+    display: none;
+  }
+  .menu .tagline {
+    margin-bottom: 0;
+  }
+  .menu .section-label {
+    margin-bottom: 11px;
+  }
+  .menu .play-button {
+    min-height: 48px;
+    margin-top: 12px;
+  }
+  .menu .eyebrow {
+    font-size: 6px;
+  }
+  .menu .menu-meta {
+    margin-top: 10px;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .menu .mode-section {
+    margin: 0;
+  }
+  .mode-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .mode-card {
+    min-height: 58px;
+    padding: 10px;
+    flex-direction: row;
+    text-align: left;
+  }
+  .mode-copy small {
+    font-size: 7px;
+  }
+  .mode-copy strong {
+    font-size: 12px;
+  }
+  .mode-description {
+    margin: 7px 0 0;
+    font-size: 9px;
+  }
+  .menu .section-label {
+    margin-bottom: 9px;
+  }
+  .menu .play-button {
+    margin: 0;
+  }
+  .hud {
+    top: max(78px, env(safe-area-inset-top));
+    left: max(20px, env(safe-area-inset-left));
+    right: max(20px, env(safe-area-inset-right));
+  }
+  .score-block > strong {
+    font-size: 38px;
+  }
+  .hud-right {
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+  }
+  .hud-center b {
+    font-size: 10px;
+  }
+  .mode-card[data-mode='unlimited'] .mode-tag {
+    font-size: 5px;
+  }
+  body[data-game-mode='unlimited'] #timer {
+    font-size: 37px;
+  }
+  .topbar {
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+}
+@media (max-height: 600px) and (orientation: portrait) {
+  .menu {
+    overflow-y: auto;
+    justify-content: flex-start;
+    padding-top: 85px;
+    padding-bottom: 75px;
+  }
+  .menu .menu-intro,
+  .menu .mode-section,
+  .menu .play-button,
+  .menu .menu-meta {
+    flex-shrink: 0;
+  }
+  .menu h1 {
+    font-size: 55px;
+  }
+}

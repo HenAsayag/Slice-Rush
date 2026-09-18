@@ -18,7 +18,7 @@ Open the local URL printed by Vite (normally http://127.0.0.1:5173). To play fro
 ```sh
 npm run build    # production output in dist/
 npm run preview # serve the production build locally
-npm test        # eight collision, rule, scoring, difficulty and pool tests
+npm test        # collision, rule, trajectory, difficulty and long-run pool tests
 ```
 
 With the dev server running, `node tests/browser.mjs` runs browser integration checks. Chrome is used at its standard Windows installation path; set `CHROME_PATH` for another Chromium executable. Browser tests also use the Vite-only development inspection handle; it is absent in production.
@@ -27,13 +27,14 @@ With the dev server running, `node tests/browser.mjs` runs browser integration c
 
 Hold the primary mouse button or drag one finger through fruit. The full segment between input events is checked, including coalesced pointer events. Release to finish a combo. Extra touches are ignored until the active finger is released. Avoid the dark bombs marked with an orange X.
 
+- **Unlimited:** no timer, no bombs, no miss penalty; fast waves of 10–15 fruit. Pause and choose **Finish & save score** when done. Records also checkpoint every five seconds and on pause.
 - **Classic:** endless play; three missed fruits or one sliced bomb ends the round.
 - **Time Attack:** 60 seconds; misses are free; a bomb subtracts 10 points, down to zero.
 - **Zen:** 90 seconds; no bombs, no miss penalty, and larger fruit waves.
 
-Normal fruit gives 1 point, pink dragon fruit gives 3, and golden fruit gives 10. Two fruits in one drag trigger Nice Slice, three or four trigger a combo, and five or more trigger Mega Slice. Combos are tracked, with a brief 60 ms slow-motion effect for strong combos. Mode clocks continue in real time during slow motion. Combos do not award extra points beyond each fruit's value.
+Normal fruit gives 1 point, pink dragon fruit gives 3, and golden fruit gives 10. Two fruits in one drag trigger Nice Slice, three or four trigger a combo, and five or more trigger Mega Slice. Combos are tracked, with a brief 50 ms slow-motion effect for strong combos outside Unlimited. Unlimited keeps its full speed. Mode clocks continue in real time during slow motion. Combos do not award extra points beyond each fruit's value.
 
-Press **P** or **Escape** to pause/resume. Space starts from the menu or resumes a paused run. Changing tabs, losing window focus, or resizing during play automatically pauses the game. High scores are separate for each mode. Accuracy is sliced fruit divided by all fruit launched during the run; bombs are excluded.
+Press **P** or **Escape** to pause/resume. Space starts from the menu or resumes a paused run. Changing tabs, losing window focus, or making a large viewport/orientation change during play automatically pauses the game. Small mobile browser-toolbar resizes keep the run moving. High scores are separate for each mode. Accuracy is sliced fruit divided by all fruit launched during the run; bombs are excluded.
 
 Sound, music, and haptic settings persist locally. Sound starts after a user gesture. Vibration and fullscreen depend on browser/device support. If localStorage is unavailable, gameplay still works; persistence is disabled.
 
@@ -70,7 +71,7 @@ The effects and music are fully playable Web Audio synthesis, not empty placehol
 ## Validation
 
 - Production build completed.
-- Eight unit tests cover full-path collision, geometry edge cases, scoring, modes, difficulty and bounded pool reuse.
+- Eleven unit tests cover collision, scoring, all modes, viewport-safe trajectories and bounded pooling during a three-minute simulated Unlimited run.
 - Chrome integration checks cover five-fruit swipes, half creation, pause/resume, bombs, misses, both clocks, persistence, primary/secondary touch handling and missing-image fallback.
 - Desktop and phone-sized layouts visually inspected; browser integration reports no uncaught runtime errors.
 
@@ -105,3 +106,11 @@ node tests/deployment.mjs
 ```
 
 Set `SLICE_RUSH_URL` to the hosted URL to run the same production browser smoke test against GitHub Pages. It checks mobile startup, WebGL, the fullscreen control, loaded fruit/background assets, and absence of runtime or HTTP errors.
+
+## Unlimited and mobile gameplay
+
+Unlimited is selected by default. It launches staggered lanes of fruit every 0.48–0.72 seconds and gradually increases its pace, without adding bombs, a timer, or missed-fruit penalties. Active fruit caps are 24 on compact screens and 44 on larger screens; unlaunched fruit do not count against accuracy. Classic and Time Attack also start faster. Gravity increases with launch speed so the apex stays below the HUD.
+
+The mobile menu uses a 2×2 mode grid, larger pause controls and safe-area-aware placement. Resize synchronization keeps the WebGL canvas and swipe coordinates aligned; small toolbar resizes do not pause. Mobile particles are bounded at 360, and combo text is throttled to keep dense waves readable. Fast swipes process their final pointer-up segment.
+
+`node tests/unlimited-browser.mjs` checks small-phone, portrait, landscape and desktop layouts; a dense endless run; touch slicing; browser-toolbar resizing; and finishing/saving an Unlimited score. These are browser/emulation checks, not physical-device performance measurements.
