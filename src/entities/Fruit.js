@@ -20,7 +20,7 @@ export class Fruit {
       half: 0,
       age: 0,
       bomb: spec.name === 'bomb',
-      sizeBoost: spec.name === 'bomb' ? 1.35 : mobile ? 1.45 : 1.75,
+      sizeBoost: spec.name === 'bomb' ? 1.35 : (mobile ? 1.45 : 1.75) * 0.75,
     });
     this.hitRadius = spec.r * 0.9 * this.sizeBoost;
     this.sprite.setTexture(spec.name).setVisible(true).setAlpha(1);

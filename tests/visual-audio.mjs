@@ -59,9 +59,9 @@ const metrics = await page.evaluate(async () => {
     .filter((f) => f.active)
     .map((f) => ({ name: f.spec.name, radius: f.hitRadius, size: f.sprite.displayWidth }));
 });
-assert.ok(metrics.find((f) => f.name === 'orange').radius > 50);
+assert.ok(metrics.find((f) => f.name === 'orange').radius > 37.5);
 await page.screenshot({ path: 'test-results/upgraded-fruits.png' });
-console.log('PASS enlarged artwork and hitboxes', metrics);
+console.log('PASS resized artwork and matching hitboxes', metrics);
 const knife = await page.evaluate(async () => {
   const a = window.__SLICE_RUSH__.manager.audio;
   a.music = false;
