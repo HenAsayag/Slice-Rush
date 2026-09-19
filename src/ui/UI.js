@@ -1,3 +1,4 @@
+import { LandscapeController } from './LandscapeController.js';
 import { FullscreenController } from './FullscreenController.js';
 import { decorateWithAtlas } from '../assets/atlas.js';
 import { icon } from './icons.js';
@@ -15,11 +16,11 @@ export class UI {
  )
    .map(
      ([mode, config]) =>
-       `<button class="mode-card ${mode === 'unlimited' ? 'selected' : ''}" data-mode="${mode}" aria-pressed="${mode === 'unlimited'}"><span class="mode-icon">${icon({ unlimited: 'infinity', classic: 'blade', time: 'clock', zen: 'leaf' }[mode])}</span><span class="mode-copy"><strong>${config.name}</strong><small>${{ unlimited: 'No timer · Fruit frenzy', classic: '3 lives · Stay sharp', time: '60 seconds · Go fast', zen: '90 seconds · Just flow' }[mode]}</small></span><span class="selection-dot"></span>${mode === 'unlimited' ? '<span class="mode-tag">NEW · ENDLESS</span>' : ''}</button>`,
+       `<button class="mode-card ${mode === 'classic' ? 'selected' : ''}" data-mode="${mode}" aria-pressed="${mode === 'classic'}"><span class="mode-icon">${icon({ unlimited: 'infinity', classic: 'blade', time: 'clock', zen: 'leaf' }[mode])}</span><span class="mode-copy"><strong>${config.name}</strong><small>${{ unlimited: 'No timer · Fruit frenzy', classic: '3 lives · Stay sharp', time: '60 seconds · Go fast', zen: '90 seconds · Just flow' }[mode]}</small></span><span class="selection-dot"></span>${mode === 'unlimited' ? '<span class="mode-tag">NEW · ENDLESS</span>' : ''}</button>`,
    )
    .join(
      '',
-   )}</div><p id="mode-description" class="mode-description">Endless fruit. No bombs. No limits.</p></section>
+   )}</div><p id="mode-description" class="mode-description">Three lives. Endless possibilities.</p></section>
  <button id="play" class="play-button" disabled><span>${icon('blade')} LET’S SLICE</span>${icon('arrow')}</button><div class="menu-meta"><span>${icon('trophy')} PERSONAL BEST <b id="menu-best">0</b></span><i></i><button id="settings-button">${icon('gear')} Settings</button></div>
  </main>
  <section id="hud" class="hud" hidden><div class="score-block"><span class="eyebrow">SCORE</span><strong id="score">0</strong><small>BEST <b id="hud-best">0</b></small></div><div class="hud-center"><span id="mode-name" class="eyebrow">CLASSIC</span><b id="combo"></b></div><div class="hud-right"><div id="lives"></div><strong id="timer" hidden>1:00</strong><button id="pause" class="icon-button" aria-label="Pause game">${icon('pause')}</button></div></section>
@@ -80,6 +81,7 @@ export class UI {
     );
     this.updateSettings();
     this.select(m.mode);
+    this.orientation = new LandscapeController(m, this.fullscreen);
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Tab' || this.$('#modal').hidden) return;
       const buttons = [...this.$('#modal').querySelectorAll('section:not([hidden]) button')];

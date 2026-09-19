@@ -47,6 +47,7 @@ export class FullscreenController {
       if (this.nativeElement) {
         const exit = document.exitFullscreen || document.webkitExitFullscreen;
         await exit.call(document);
+        screen.orientation?.unlock?.();
       } else if (this.expanded) {
         this.expanded = false;
       } else {
@@ -56,6 +57,13 @@ export class FullscreenController {
           try {
             await request.call(root);
             this.expanded = !this.nativeElement;
+            if (this.nativeElement) {
+              try {
+                await screen.orientation?.lock?.('landscape');
+              } catch {
+                // The rotation gate still enforces landscape when locking is unsupported.
+              }
+            }
           } catch {
             this.expanded = true;
           }

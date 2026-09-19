@@ -109,8 +109,12 @@ Set `SLICE_RUSH_URL` to the hosted URL to run the same production browser smoke 
 
 ## Unlimited and mobile gameplay
 
-Unlimited is selected by default. Each fruit launches individually with a randomized 90–150 ms gap, gradually quickening to 70–130 ms. All modes share a single launch cooldown across waves, so slow frames or a full fruit pool never cause a simultaneous catch-up burst. Unlimited gradually increases its pace, without adding bombs, a timer, or missed-fruit penalties. Active fruit caps are 24 on compact screens and 44 on larger screens; unlaunched fruit do not count against accuracy. Classic and Time Attack also start faster. Gravity increases with launch speed so the apex stays below the HUD.
+Classic is first in the menu and selected by default. Gameplay requires a landscape viewport on every device. Portrait view shows a rotation prompt and blocks both touch and keyboard starts/resumes. Rotating during a run pauses it without advancing the clock; return to landscape and choose Back to slicing. Fullscreen attempts a native landscape lock where supported; the rotation prompt remains the fallback.
+
+Unlimited remains available. Each fruit launches individually with a randomized 90–150 ms gap, gradually quickening to 70–130 ms. All modes share a single launch cooldown across waves, so slow frames or a full fruit pool never cause a simultaneous catch-up burst. Unlimited gradually increases its pace, without adding bombs, a timer, or missed-fruit penalties. Active fruit caps are 24 on compact screens and 44 on larger screens; unlaunched fruit do not count against accuracy. Classic and Time Attack also start faster. Gravity increases with launch speed so the apex stays below the HUD.
 
 The mobile menu uses a 2×2 mode grid, larger pause controls and safe-area-aware placement. Resize synchronization keeps the WebGL canvas and swipe coordinates aligned; small toolbar resizes do not pause. Mobile particles are bounded at 360, and combo text is throttled to keep dense waves readable. Fast swipes process their final pointer-up segment.
 
 `node tests/unlimited-browser.mjs` checks small-phone, portrait, landscape and desktop layouts; a dense endless run; touch slicing; browser-toolbar resizing; and finishing/saving an Unlimited score. These are browser/emulation checks, not physical-device performance measurements.
+
+`node tests/landscape-browser.mjs` verifies Classic is first and selected on a fresh load, portrait start/resume blocking (including keyboard controls), fullscreen fallback, small landscape layouts, and preservation of score and clock across rotation. Returning to landscape requires an explicit resume.

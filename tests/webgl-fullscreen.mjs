@@ -7,7 +7,7 @@ const browser = await chromium.launch({
     process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',
   headless: true,
 });
-const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const page = await browser.newPage({ viewport: { width: 844, height: 390 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://127.0.0.1:5173');
@@ -25,7 +25,7 @@ assert.equal(renderer.webgl, true);
 assert.equal(renderer.contextLost, false);
 console.log('PASS explicit WebGL renderer with a live GL context');
 const bounds = await page.locator('#fullscreen').boundingBox();
-assert.ok(bounds.height >= 44 && bounds.x + bounds.width <= 390);
+assert.ok(bounds.height >= 44 && bounds.x + bounds.width <= 844);
 await page.screenshot({ path: 'test-results/webgl-mobile-menu.png' });
 await page.locator('#fullscreen').click();
 await page.waitForFunction(() => document.fullscreenElement);

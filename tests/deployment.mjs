@@ -23,6 +23,10 @@ await page.waitForFunction(() => !document.querySelector('#play')?.disabled);
 await page.waitForFunction(() =>
   [...document.images].every((i) => i.complete && i.naturalWidth > 0),
 );
+assert.ok(await page.locator('#orientation-gate').isVisible());
+assert.equal(await page.locator('[data-mode="classic"]').getAttribute('aria-pressed'), 'true');
+await page.setViewportSize({ width: 844, height: 390 });
+await page.locator('#orientation-gate').waitFor({ state: 'hidden' });
 await page.locator('[data-mode="unlimited"]').click();
 await page.locator('#play').click();
 await page.waitForTimeout(1400);
@@ -34,9 +38,9 @@ assert.ok(
       document.querySelector('#game canvas').getContext('webgl') instanceof WebGLRenderingContext,
   ),
 );
-await page.mouse.move(20, 550);
+await page.mouse.move(20, 260);
 await page.mouse.down();
-await page.mouse.move(370, 550, { steps: 8 });
+await page.mouse.move(800, 260, { steps: 8 });
 await page.mouse.up();
 await page.screenshot({ path: 'test-results/pages-game.png' });
 assert.ok(

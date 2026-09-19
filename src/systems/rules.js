@@ -1,17 +1,17 @@
 export const MODES = {
-  unlimited: {
-    name: 'Unlimited',
-    duration: Infinity,
-    bombs: false,
-    misses: false,
-    description: 'Endless fruit. No bombs. No limits.',
-  },
   classic: {
     name: 'Classic',
     duration: Infinity,
     bombs: true,
     misses: true,
     description: 'Three lives. Endless possibilities.',
+  },
+  unlimited: {
+    name: 'Unlimited',
+    duration: Infinity,
+    bombs: false,
+    misses: false,
+    description: 'Endless fruit. No bombs. No limits.',
   },
   time: {
     name: 'Time Attack',

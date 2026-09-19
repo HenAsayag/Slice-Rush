@@ -16,7 +16,7 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 await page.goto('http://127.0.0.1:5173');
 await page.waitForFunction(() => window.__SLICE_RUSH__?.manager.scene);
-assert.equal(await page.locator('[data-mode="unlimited"]').getAttribute('aria-pressed'), 'true');
+assert.equal(await page.locator('[data-mode="classic"]').getAttribute('aria-pressed'), 'true');
 for (const [width, height] of [
   [390, 844],
   [320, 568],
@@ -26,6 +26,10 @@ for (const [width, height] of [
   await page.setViewportSize({ width, height });
   await page.evaluate(() => window.__SLICE_RUSH__.manager.menu());
   await page.waitForTimeout(120);
+  if (height >= width) {
+    assert.ok(await page.locator('#orientation-gate').isVisible());
+    continue;
+  }
   for (const selector of ['#fullscreen', '#play', '[data-mode="unlimited"]', '[data-mode="zen"]']) {
     const b = await page.locator(selector).boundingBox();
     assert.ok(b.x >= 0 && b.x + b.width <= width + 1, selector + ' width at ' + width);
@@ -34,8 +38,9 @@ for (const [width, height] of [
   await page.screenshot({ path: `test-results/unlimited-menu-${width}.png` });
 }
 console.log('PASS four-mode menu fits phone, small phone, landscape and desktop');
-await page.setViewportSize({ width: 390, height: 844 });
+await page.setViewportSize({ width: 844, height: 390 });
 await page.waitForTimeout(150);
+await page.locator('[data-mode="unlimited"]').click();
 await page.locator('#play').click();
 await page.waitForTimeout(1300);
 assert.equal(await page.locator('#timer').textContent(), '∞');
@@ -64,7 +69,7 @@ assert.ok(run.launched >= 60);
 assert.ok(run.max <= 24);
 console.log('PASS endless mobile fruit stream:', run);
 await page.screenshot({ path: 'test-results/unlimited-game-mobile.png' });
-await page.setViewportSize({ width: 390, height: 794 });
+await page.setViewportSize({ width: 844, height: 350 });
 await page.waitForTimeout(200);
 assert.equal(await page.evaluate(() => window.__SLICE_RUSH__.manager.state), 'playing');
 console.log('PASS mobile browser toolbar resize does not interrupt play');
@@ -73,9 +78,9 @@ const target = await page.evaluate(async () => {
   m.scene.begin();
   m.scene.spawner.wait = 100;
   const { FRUITS } = await import('/src/assets/fruits.js');
-  m.scene.fruits.take().launch(FRUITS[1], 195, 450, 0, 0);
+  m.scene.fruits.take().launch(FRUITS[1], 195, 260, 0, 0);
   m.score.launched++;
-  return { x: 195, y: 450 };
+  return { x: 195, y: 260 };
 });
 const cdp = await page.context().newCDPSession(page);
 await cdp.send('Input.dispatchTouchEvent', {
@@ -96,6 +101,7 @@ assert.ok(await page.locator('#results').isVisible());
 assert.ok((await page.evaluate(() => window.__SLICE_RUSH__.manager.bests.unlimited)) > 0);
 await page.reload();
 await page.waitForFunction(() => window.__SLICE_RUSH__?.manager.scene);
+await page.locator('[data-mode="unlimited"]').click();
 assert.ok(Number(await page.locator('#menu-best').textContent()) > 0);
 console.log('PASS touch slicing, finish run and persistent unlimited record');
 assert.deepEqual(errors, []);

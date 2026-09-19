@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { isLandscape } from '../ui/LandscapeController.js';
 import { registerAssets, FRUITS } from '../assets/fruits.js';
 import { Fruit } from '../entities/Fruit.js';
 import { Pool, rand } from '../utils/math.js';
@@ -111,6 +112,11 @@ export class MarketScene extends Phaser.Scene {
       m = this.manager,
       w = this.scale.width,
       h = this.scale.height;
+    if (!isLandscape()) {
+      m.pause();
+      m.audio.update(false);
+      return;
+    }
     this.ambient.clear();
     for (const f of this.fireflies) {
       const x = f.x * w + Math.sin(time * 0.00015 + f.phase) * 20,

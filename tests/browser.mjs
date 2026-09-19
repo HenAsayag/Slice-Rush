@@ -118,14 +118,15 @@ await page.waitForFunction(() => window.__SLICE_RUSH__?.manager.scene);
 assert.equal(await page.evaluate(() => window.__SLICE_RUSH__.manager.audio.sound), false);
 assert.ok((await page.evaluate(() => window.__SLICE_RUSH__.manager.bests.classic)) >= 5);
 console.log('PASS settings and high scores persist');
-await page.setViewportSize({ width: 390, height: 844 });
+await page.setViewportSize({ width: 844, height: 390 });
+await page.waitForTimeout(150);
 await fixture('zen', 'orange');
 await page.evaluate(() => {
   const m = window.__SLICE_RUSH__.manager;
   for (const f of m.scene.fruits.items)
     if (f.active) {
       f.x = 195;
-      f.y = 430;
+      f.y = 260;
     }
 });
 await page.waitForTimeout(50);
@@ -133,19 +134,19 @@ await page.evaluate(() => window.__SLICE_RUSH__.manager.resume());
 const cdp = await page.context().newCDPSession(page);
 await cdp.send('Input.dispatchTouchEvent', {
   type: 'touchStart',
-  touchPoints: [{ x: 90, y: 430, id: 1 }],
+  touchPoints: [{ x: 90, y: 260, id: 1 }],
 });
 await cdp.send('Input.dispatchTouchEvent', {
   type: 'touchStart',
   touchPoints: [
-    { x: 90, y: 430, id: 1 },
+    { x: 90, y: 260, id: 1 },
     { x: 320, y: 250, id: 2 },
   ],
 });
 await cdp.send('Input.dispatchTouchEvent', {
   type: 'touchMove',
   touchPoints: [
-    { x: 300, y: 430, id: 1 },
+    { x: 300, y: 260, id: 1 },
     { x: 320, y: 250, id: 2 },
   ],
 });

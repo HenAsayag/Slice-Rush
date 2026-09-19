@@ -1569,3 +1569,103 @@ body[data-game-mode='unlimited'] #timer {
     font-size: 55px;
   }
 }
+
+/* The portrait gate sits outside the inert game UI so only its control is reachable. */
+#orientation-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  background: radial-gradient(ellipse at top, #214c43, #071c20 70%);
+  overflow-y: auto;
+  text-align: center;
+}
+#orientation-gate[hidden] {
+  display: none;
+}
+.orientation-card {
+  width: min(100%, 380px);
+  margin: auto;
+}
+.orientation-card h2 {
+  font-size: clamp(30px, 8vw, 46px);
+  line-height: 1.05;
+  margin: 20px 0;
+  letter-spacing: -1px;
+}
+.orientation-card h2 em {
+  color: var(--orange);
+  font-style: normal;
+}
+.orientation-card p {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+.orientation-card small {
+  display: block;
+  margin: 18px auto 0;
+  max-width: 290px;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 12px;
+}
+.orientation-card button {
+  min-height: 48px;
+  width: 100%;
+}
+.rotate-device {
+  width: 92px;
+  height: 54px;
+  border: 3px solid #ffb76b;
+  border-radius: 12px;
+  margin: 0 auto 30px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 40px #ff82471a;
+}
+.rotate-device span {
+  font-size: 40px;
+  line-height: 1;
+  color: #ffb76b;
+}
+
+@media (max-height: 360px) and (orientation: landscape) {
+  .menu {
+    grid-template-columns: 0.8fr 1.2fr;
+    padding: 70px max(24px, env(safe-area-inset-right)) 30px max(24px, env(safe-area-inset-left));
+    gap: 8px 18px;
+  }
+  .menu h1 {
+    font-size: 50px;
+    margin: 8px 0;
+  }
+  .menu .tagline {
+    font-size: 11px;
+    margin-top: 12px;
+  }
+  .menu-intro .eyebrow {
+    display: none;
+  }
+  .menu .mode-card {
+    min-height: 46px;
+    padding: 6px;
+    gap: 5px;
+  }
+  .menu .mode-copy small {
+    font-size: 6px;
+  }
+  .menu .mode-description {
+    margin-top: 5px;
+    font-size: 8px;
+  }
+  .menu .section-label {
+    margin-bottom: 7px;
+  }
+  .menu .play-button {
+    min-height: 44px;
+  }
+}

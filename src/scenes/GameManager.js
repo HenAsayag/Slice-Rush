@@ -1,3 +1,4 @@
+import { isLandscape } from '../ui/LandscapeController.js';
 import { ScoreSystem, MODES } from '../systems/rules.js';
 import { read, save } from '../utils/storage.js';
 import { AudioManager } from '../audio/AudioManager.js';
@@ -5,7 +6,7 @@ export class GameManager {
   constructor(ui) {
     this.ui = ui;
     this.audio = new AudioManager();
-    this.mode = 'unlimited';
+    this.mode = 'classic';
     this.state = 'menu';
     this.elapsed = 0;
     this.score = new ScoreSystem(this.mode);
@@ -39,7 +40,7 @@ export class GameManager {
     this.audio.play('menu_click');
   }
   start() {
-    if (!this.scene) return;
+    if (!this.scene || !isLandscape()) return;
     clearTimeout(this.endTimer);
     this.audio.unlock();
     this.audio.play('menu_click');
@@ -75,7 +76,7 @@ export class GameManager {
     this.ui.show('paused');
   }
   resume() {
-    if (this.state !== 'paused') return;
+    if (this.state !== 'paused' || !isLandscape()) return;
     this.state = 'playing';
     this.audio.unlock();
     this.ui.show('playing');
